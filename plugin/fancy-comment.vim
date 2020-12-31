@@ -5,8 +5,9 @@ endif
 let g:loaded_fancy_comment = 1
 
 function! FancyComment(t)
-  let escapedComment = substitute(&commentstring, "%s", "", "g")
-  execute "r!figlet " . a:t . " \| sed 's/^/" . escapedComment . "/g'"
+  let escapedComment = substitute(substitute(&commentstring, "%s", "", "g"), "#", '#', "g")
+  let command = "r!figlet " . a:t . " \| sed 's/^/" . escapedComment . "/g'"
+  execute escape(command, '#')
 endfunction
 
 command! -complete=custom,ListFigletFonts -nargs=1 FancyComment call FancyComment(<f-args>)
@@ -20,3 +21,4 @@ fun ListFigletFonts(A,L,P)
 
   return ""
 endfun
+
