@@ -2,12 +2,32 @@
 if exists("g:loaded_fancy_comment")
   finish
 endif
+
 let g:loaded_fancy_comment = 1
 
+function s:getSingleLineCommentChar()
+  for c in split(&comments, ',')
+    if c[0] == ':'
+      return c[1:-1]
+    endif
+  endfor
+endfunction
+
+function s:fancyCommentStringTransform(i, l)
+  let rawLine = s:getSingleLineCommentChar() . ' ' . a:l
+  let processed = substitute(rawLine, '\s\+$', '', 'g')
+  return processed
+endfunction
+
 function! FancyComment(t)
-  let escapedComment = substitute(substitute(&commentstring, "%s", "", "g"), "#", '#', "g")
-  let command = "r!figlet " . a:t . " \| sed 's/^/" . escapedComment . "/g'"
-  execute escape(command, '#')
+  let command = "figlet " . a:t
+  let output_raw = systemlist(command)
+
+  let output = map(output_raw, function("s:fancyCommentStringTransform"))
+
+  let currentBuf = bufnr('%')
+  let currentLine = line('.')
+  call appendbufline(currentBuf, currentLine, output)
 endfunction
 
 command! -complete=custom,ListFigletFonts -nargs=1 FancyComment call FancyComment(<f-args>)
