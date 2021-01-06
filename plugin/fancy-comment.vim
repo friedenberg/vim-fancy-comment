@@ -32,7 +32,7 @@ endfunction
 
 command! -complete=custom,ListFigletFonts -nargs=1 FancyComment call FancyComment(<f-args>)
 
-fun ListFigletFonts(A,L,P)
+function! ListFigletFonts(A,L,P)
   let lastArg = split(a:L)[-1]
 
   if lastArg == "-f"
