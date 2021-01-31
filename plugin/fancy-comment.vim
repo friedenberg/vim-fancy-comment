@@ -5,16 +5,8 @@ endif
 
 let g:loaded_fancy_comment = 1
 
-function s:getSingleLineCommentChar()
-  for c in split(&comments, ',')
-    if c[0] == ':'
-      return c[1:-1]
-    endif
-  endfor
-endfunction
-
 function s:fancyCommentStringTransform(i, l)
-  let rawLine = s:getSingleLineCommentChar() . ' ' . a:l
+  let rawLine = printf(&commentstring, ' ' . a:l)
   let processed = substitute(rawLine, '\s\+$', '', 'g')
   return processed
 endfunction
